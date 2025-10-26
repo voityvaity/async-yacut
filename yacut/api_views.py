@@ -14,15 +14,17 @@ def create_short_link_api():
     """Создание короткой ссылки через API."""
     try:
         json_data = request.get_json()
-        if json_data is None or json_data == {}:
-            return jsonify(
-                {'message': API_ERROR_MESSAGES['no_body']}
-            ), HTTPStatus.BAD_REQUEST
-        data = json_data
     except Exception:
         return jsonify(
             {'message': API_ERROR_MESSAGES['no_body']}
         ), HTTPStatus.BAD_REQUEST
+
+    if json_data is None or json_data == {}:
+        return jsonify(
+            {'message': API_ERROR_MESSAGES['no_body']}
+        ), HTTPStatus.BAD_REQUEST
+
+    data = json_data
 
     if 'url' not in data or not data['url'].strip():
         return jsonify(

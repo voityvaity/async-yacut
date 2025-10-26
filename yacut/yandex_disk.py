@@ -95,18 +95,26 @@ async def _upload_single_file(session, filename, file_data):
     """Загружает один файл на Яндекс.Диск и возвращает ссылку на скачивание."""
     try:
         upload_url = await _request_upload_url(session, filename)
-        if not upload_url:
-            return filename, None
-
-        file_path = await _upload_file_to_disk(session, upload_url, file_data)
-        if not file_path:
-            return filename, None
-
-        download_link = await _get_download_link(session, file_path)
-        return filename, download_link
-
     except Exception:
         return filename, None
+
+    if not upload_url:
+        return filename, None
+
+    try:
+        file_path = await _upload_file_to_disk(session, upload_url, file_data)
+    except Exception:
+        return filename, None
+
+    if not file_path:
+        return filename, None
+
+    try:
+        download_link = await _get_download_link(session, file_path)
+    except Exception:
+        return filename, None
+
+    return filename, download_link
 
 
 async def upload_files_batch(files):
