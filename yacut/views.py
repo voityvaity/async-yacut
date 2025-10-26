@@ -1,3 +1,6 @@
+import requests
+import urllib.parse
+
 from flask import (
     Blueprint, abort, flash, redirect, render_template, request
 )
@@ -8,6 +11,7 @@ from yacut.helpers import (
     get_url_map_by_short_id, is_file_url, is_reserved_route
 )
 from yacut.utils import is_valid_short_id_format
+
 
 bp = Blueprint('main', __name__)
 
@@ -116,8 +120,6 @@ def redirect_to_original(short_id):
 
     if url_map:
         if is_file_url(url_map.original):
-            import requests
-            import urllib.parse
             try:
                 response = requests.get(url_map.original, stream=True)
                 if response.status_code == 200:
