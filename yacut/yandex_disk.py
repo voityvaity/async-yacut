@@ -5,6 +5,7 @@ import urllib.parse
 import aiohttp
 
 from yacut.constants import (
+    YANDEX_DISK_API_HOST, YANDEX_DISK_API_VERSION,
     YANDEX_DISK_DOWNLOAD_URL, YANDEX_DISK_UPLOAD_PATH_PREFIX,
     YANDEX_DISK_UPLOAD_URL
 )
@@ -16,8 +17,34 @@ def _get_auth_headers():
     return {'Authorization': f'OAuth {disk_token}'}
 
 
+async def _create_folder_if_not_exists(session):
+    """Создает папку YaCut на Яндекс.Диске, если она не существует."""
+    folder_path = YANDEX_DISK_UPLOAD_PATH_PREFIX.rstrip('/')
+    params = {'path': folder_path}
+    
+    # Проверяем, существует ли папка
+    async with session.get(
+        url=f'{YANDEX_DISK_API_HOST}{YANDEX_DISK_API_VERSION}/disk/resources',
+        headers=_get_auth_headers(),
+        params=params
+    ) as response:
+        if response.status == 200:
+            return True  # Папка существует
+    
+    # Создаем папку
+    async with session.put(
+        url=f'{YANDEX_DISK_API_HOST}{YANDEX_DISK_API_VERSION}/disk/resources',
+        headers=_get_auth_headers(),
+        params=params
+    ) as response:
+        return response.status in [200, 201]
+
+
 async def _request_upload_url(session, filename):
     """Запрашивает URL для загрузки файла на Яндекс.Диск."""
+    # Сначала создаем папку, если она не существует
+    await _create_folder_if_not_exists(session)
+    
     path = f'{YANDEX_DISK_UPLOAD_PATH_PREFIX}{filename}'
     params = {
         'path': path,
@@ -32,6 +59,10 @@ async def _request_upload_url(session, filename):
         if response.status == 200:
             data = await response.json()
             return data.get('href')
+        else:
+            print(f"Ошибка запроса URL загрузки: {response.status}")
+            text = await response.text()
+            print(f"Ответ сервера: {text}")
         return None
 
 

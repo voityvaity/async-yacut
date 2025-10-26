@@ -20,6 +20,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
         'DATABASE_URI', 'sqlite:///db.sqlite3')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['JSON_AS_ASCII'] = False
 
     db.init_app(app)
     migrate.init_app(app, db)

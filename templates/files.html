@@ -1,40 +1,47 @@
 {% extends "base.html" %}
 {% block title %}Загрузка файлов - YaCut{% endblock %}
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-10 col-lg-8">
-    <div class="text-center mb-5">
-      <h1 class="display-4"><span style="color:red">Ya</span>Cut</h1>
-      <p class="lead">Загрузите файлы на Яндекс.Диск и получите короткие ссылки для скачивания</p>
-    </div>
+<h1 class="text-center"><span style="color:red">Ya</span>Cut</h1>
+<p class="text-center my-4">
+  Загрузите файлы на Яндекс.Диск и получите короткие ссылки для скачивания
+</p>
 
-    <div class="card shadow">
-      <div class="card-body p-4">
-        <form method="POST" enctype="multipart/form-data" id="fileUploadForm">
-          {{ form.hidden_tag() }}
-          <div class="form-group mb-4">
-            {{ form.files.label(class="form-label font-weight-bold") }}
-            {{ form.files(class="form-control-file", multiple=true, accept="*/*") }}
+<div class="container">
+  <div class="row my-3">
+    <div class="col-sm">
+    </div>
+    <div class="col-sm">
+      <form method="POST" enctype="multipart/form-data" id="fileUploadForm">
+        {{ form.hidden_tag() }}
+        <div>
+          <div>
+            {{ form.files(class="form-control form-control-lg py-2 mb-3", multiple=true, accept="*/*") }}
             {% if form.files.errors %}
               {% for error in form.files.errors %}
-                <div class="invalid-feedback d-block">{{ error }}</div>
+                <p><span style="color:red">{{ error }}</span></p>
               {% endfor %}
+            {% else %}
+              <p><span style="color:red"></span></p>
             {% endif %}
-            <small class="form-text text-muted">Выберите один или несколько файлов для загрузки. Максимальный размер файла: 10 МБ</small>
           </div>
-          <div class="text-center">
-            {{ form.submit(class="btn btn-primary btn-lg px-5") }}
-          </div>
-        </form>
-      </div>
-    </div>
 
-    {% if file_links %}
-    <div class="card mt-4">
-      <div class="card-header">
-        <h5 class="mb-0">Загруженные файлы</h5>
-      </div>
-      <div class="card-body">
+          <input type="submit" class="btn btn-primary" value="Загрузить">
+        </div>
+      </form>
+    </div>
+    <div class="col-sm">
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row ">
+    <div class="col-sm">
+    </div>
+    <div class="col-sm">
+      <p class="text-center">
+      {% if file_links %}
+        <h5 class="text-center">Загруженные файлы</h5>
         <div class="table-responsive">
           <table class="table table-hover">
             <thead>
@@ -77,17 +84,11 @@
             </tbody>
           </table>
         </div>
-      </div>
+      {% endif %}
+      </p>
     </div>
-    {% else %}
-    <div class="card mt-4">
-      <div class="card-body text-center text-muted">
-        <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
-        <h5>Файлы не загружены</h5>
-        <p>После загрузки здесь появятся ссылки на ваши файлы</p>
-      </div>
+    <div class="col-sm">
     </div>
-    {% endif %}
   </div>
 </div>
 

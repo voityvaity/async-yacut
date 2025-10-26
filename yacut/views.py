@@ -52,6 +52,14 @@ def files():
         try:
             import asyncio
             from yacut.yandex_disk import upload_files_batch
+            import os
+
+            # Проверяем наличие токена
+            disk_token = os.environ.get('DISK_TOKEN')
+            if not disk_token:
+                flash('Не настроен токен Яндекс.Диска. '
+                      'Обратитесь к администратору.', 'error')
+                return render_template('files.html', form=form)
 
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
@@ -80,7 +88,7 @@ def files():
                     file_links.append({
                         'filename': filename,
                         'short_link': None,
-                        'error': 'Не удалось загрузить файл'
+                        'error': 'Не удалось загрузить файл на Яндекс.Диск'
                     })
 
             files_count = len(file_links)
