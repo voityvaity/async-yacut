@@ -1,4 +1,5 @@
 from flask import flash, jsonify, render_template, request
+from http import HTTPStatus
 
 from yacut.constants import API_ERROR_MESSAGES, FILE_DOMAINS, RESERVED_ROUTES
 from yacut.models import URLMap
@@ -69,7 +70,7 @@ def _create_error_response(status_code, message, template):
 def register_error_handlers(app):
     """Регистрирует обработчики ошибок для приложения."""
 
-    @app.errorhandler(400)
+    @app.errorhandler(HTTPStatus.BAD_REQUEST)
     def bad_request_error(error):
         """Обработчик ошибки 400."""
         if _is_api_request():
@@ -77,26 +78,34 @@ def register_error_handlers(app):
                     'parse' in str(error).lower()):
                 return jsonify(
                     {'message': API_ERROR_MESSAGES['no_body']}
-                ), 400
-        return _create_error_response(400, 'Неверный запрос', '400.html')
+                ), HTTPStatus.BAD_REQUEST
+        return _create_error_response(
+            HTTPStatus.BAD_REQUEST, 'Неверный запрос', '400.html'
+        )
 
-    @app.errorhandler(404)
+    @app.errorhandler(HTTPStatus.NOT_FOUND)
     def not_found_error(error):
         """Обработчик ошибки 404."""
         return _create_error_response(
-            404, API_ERROR_MESSAGES['id_not_found'], '404.html'
+            HTTPStatus.NOT_FOUND,
+            API_ERROR_MESSAGES['id_not_found'],
+            '404.html'
         )
 
-    @app.errorhandler(500)
+    @app.errorhandler(HTTPStatus.INTERNAL_SERVER_ERROR)
     def internal_error(error):
         """Обработчик ошибки 500."""
         return _create_error_response(
-            500, 'Внутренняя ошибка сервера', '500.html'
+            HTTPStatus.INTERNAL_SERVER_ERROR,
+            'Внутренняя ошибка сервера',
+            '500.html'
         )
 
-    @app.errorhandler(413)
+    @app.errorhandler(HTTPStatus.REQUEST_ENTITY_TOO_LARGE)
     def request_entity_too_large_error(error):
         """Обработчик ошибки 413."""
         return _create_error_response(
-            413, 'Файл слишком большой', '413.html'
+            HTTPStatus.REQUEST_ENTITY_TOO_LARGE,
+            'Файл слишком большой',
+            '413.html'
         )

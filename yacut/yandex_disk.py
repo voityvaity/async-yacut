@@ -1,6 +1,8 @@
 import asyncio
+import logging
 import os
 import urllib.parse
+from http import HTTPStatus
 
 import aiohttp
 
@@ -8,6 +10,8 @@ from yacut.constants import (
     YANDEX_DISK_API_HOST, YANDEX_DISK_API_VERSION,
     YANDEX_DISK_DOWNLOAD_URL, YANDEX_DISK_UPLOAD_URL
 )
+
+logger = logging.getLogger(__name__)
 
 
 def _get_auth_headers():
@@ -26,14 +30,14 @@ async def _create_folder_if_not_exists(session):
         headers=_get_auth_headers(),
         params=params
     ) as response:
-        if response.status == 200:
+        if response.status == HTTPStatus.OK:
             return True
     async with session.put(
         url=f'{YANDEX_DISK_API_HOST}{YANDEX_DISK_API_VERSION}/disk/resources',
         headers=_get_auth_headers(),
         params=params
     ) as response:
-        return response.status in [200, 201]
+        return response.status in [HTTPStatus.OK, HTTPStatus.CREATED]
 
 
 async def _request_upload_url(session, filename):
@@ -51,20 +55,20 @@ async def _request_upload_url(session, filename):
         headers=_get_auth_headers(),
         params=params
     ) as response:
-        if response.status == 200:
+        if response.status == HTTPStatus.OK:
             data = await response.json()
             return data.get('href')
         else:
-            print(f"Ошибка запроса URL загрузки: {response.status}")
+            logger.error(f"Ошибка запроса URL загрузки: {response.status}")
             text = await response.text()
-            print(f"Ответ сервера: {text}")
+            logger.error(f"Ответ сервера: {text}")
         return None
 
 
 async def _upload_file_to_disk(session, upload_url, file_data):
     """Загружает файл на Яндекс.Диск по предоставленному URL."""
     async with session.put(url=upload_url, data=file_data) as response:
-        if response.status == 201:
+        if response.status == HTTPStatus.CREATED:
             location = response.headers.get('Location', '')
             location = urllib.parse.unquote(location)
             location = location.replace('/disk', '')
@@ -81,7 +85,7 @@ async def _get_download_link(session, file_path):
         headers=_get_auth_headers(),
         params=params
     ) as response:
-        if response.status == 200:
+        if response.status == HTTPStatus.OK:
             data = await response.json()
             return data.get('href')
         return None

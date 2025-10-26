@@ -3,7 +3,7 @@ from flask_wtf.file import FileAllowed, MultipleFileField
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, Length, URL, ValidationError
 
-from yacut.constants import ERROR_MESSAGES
+from yacut.constants import ERROR_MESSAGES, MAX_SHORT_ID_LENGTH
 from yacut.utils import validate_custom_id as validate_custom_id_utils
 
 FORM_CONTROL_CLASS = 'form-control form-control-lg py-2 mb-3'
@@ -26,7 +26,7 @@ class URLForm(FlaskForm):
     custom_id = StringField(
         'Ваш вариант короткой ссылки',
         validators=[
-            Length(max=16, message=ERROR_MESSAGES['too_long'])
+            Length(max=MAX_SHORT_ID_LENGTH, message=ERROR_MESSAGES['too_long'])
         ],
         render_kw={'class': FORM_CONTROL_CLASS,
                    'placeholder': 'Ваш вариант короткой ссылки'}

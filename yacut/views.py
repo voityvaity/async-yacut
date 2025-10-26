@@ -1,9 +1,12 @@
-import requests
+import asyncio
+import os
 import urllib.parse
 
+import requests
 from flask import (
-    Blueprint, abort, flash, redirect, render_template, request
+    Blueprint, abort, flash, redirect, render_template, request, Response
 )
+from http import HTTPStatus
 
 from yacut.forms import FileUploadForm, URLForm
 from yacut.helpers import (
@@ -11,6 +14,7 @@ from yacut.helpers import (
     get_url_map_by_short_id, is_file_url, is_reserved_route
 )
 from yacut.utils import is_valid_short_id_format
+from yacut.yandex_disk import upload_files_batch
 
 
 bp = Blueprint('main', __name__)
@@ -53,10 +57,6 @@ def files():
             return render_template('files.html', form=form)
 
         try:
-            import asyncio
-            from yacut.yandex_disk import upload_files_batch
-            import os
-
             disk_token = os.environ.get('DISK_TOKEN')
             if not disk_token:
                 flash('Не настроен токен Яндекс.Диска. '
@@ -111,41 +111,41 @@ def files():
 def redirect_to_original(short_id):
     """Переадресация на оригинальную ссылку."""
     if is_reserved_route(short_id):
-        abort(404)
+        abort(HTTPStatus.NOT_FOUND)
 
     if not is_valid_short_id_format(short_id):
-        abort(404)
+        abort(HTTPStatus.NOT_FOUND)
 
     url_map = get_url_map_by_short_id(short_id)
 
-    if url_map:
-        if is_file_url(url_map.original):
-            try:
-                response = requests.get(url_map.original, stream=True)
-                if response.status_code == 200:
-                    from flask import Response
-                    parsed_url = urllib.parse.urlparse(url_map.original)
-                    query_params = urllib.parse.parse_qs(parsed_url.query)
-                    filename = query_params.get('filename', ['file'])[0]
-                    encoded_filename = urllib.parse.quote(
-                        filename.encode('utf-8'))
+    if not url_map:
+        abort(HTTPStatus.NOT_FOUND)
 
-                    return Response(
-                        response.content,
-                        mimetype=response.headers.get(
-                            'content-type', 'application/octet-stream'),
-                        headers={
-                            'Content-Disposition': (
-                                f'attachment; filename*=UTF-8\'\''
-                                f'{encoded_filename}'
-                            )
-                        }
-                    )
-                else:
-                    abort(404)
-            except Exception:
-                abort(404)
-        else:
-            return redirect(url_map.original)
-    else:
-        abort(404)
+    if is_file_url(url_map.original):
+        try:
+            response = requests.get(url_map.original, stream=True)
+        except Exception:
+            abort(HTTPStatus.NOT_FOUND)
+
+        if response.status_code != HTTPStatus.OK:
+            abort(HTTPStatus.NOT_FOUND)
+
+        parsed_url = urllib.parse.urlparse(url_map.original)
+        query_params = urllib.parse.parse_qs(parsed_url.query)
+        filename = query_params.get('filename', ['file'])[0]
+        encoded_filename = urllib.parse.quote(
+            filename.encode('utf-8'))
+
+        return Response(
+            response.content,
+            mimetype=response.headers.get(
+                'content-type', 'application/octet-stream'),
+            headers={
+                'Content-Disposition': (
+                    f'attachment; filename*=UTF-8\'\''
+                    f'{encoded_filename}'
+                )
+            }
+        )
+
+    return redirect(url_map.original)

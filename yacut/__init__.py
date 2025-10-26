@@ -13,6 +13,9 @@ migrate = Migrate()
 
 def create_app():
     """Создает Flask приложение."""
+    from yacut import views, api_views
+    from yacut.helpers import register_error_handlers
+
     app = Flask(__name__, template_folder='../templates',
                 static_folder='../static')
 
@@ -25,11 +28,9 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
 
-    from yacut import views, api_views
     app.register_blueprint(views.bp)
     app.register_blueprint(api_views.api_bp)
 
-    from yacut.helpers import register_error_handlers
     register_error_handlers(app)
 
     return app

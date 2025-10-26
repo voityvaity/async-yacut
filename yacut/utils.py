@@ -2,8 +2,10 @@ import random
 import time
 
 from yacut.constants import (
-    ERROR_MESSAGES, MAX_SHORT_ID_LENGTH, MIN_SHORT_ID_LENGTH,
-    RESERVED_WORDS, VALID_CHARS
+    ERROR_MESSAGES, MAX_ASCII_CODE, MAX_ATTEMPTS_TO_GENERATE_ID,
+    MAX_SHORT_ID_LENGTH, MIN_SHORT_ID_LENGTH,
+    RESERVED_WORDS, VALID_CHARS, FALLBACK_RANDOM_PART_LENGTH,
+    TIMESTAMP_SUBSTRING_LENGTH
 )
 from yacut.models import URLMap
 
@@ -22,16 +24,15 @@ def get_unique_short_id():
     """Генерирует уникальный короткий идентификатор."""
     for length in range(MIN_SHORT_ID_LENGTH, MAX_SHORT_ID_LENGTH + 1):
         attempts = 0
-        max_attempts = 100
 
-        while attempts < max_attempts:
+        while attempts < MAX_ATTEMPTS_TO_GENERATE_ID:
             short_id = _generate_random_short_id(length)
             if not _check_short_id_exists(short_id):
                 return short_id
             attempts += 1
 
-    timestamp = str(int(time.time()))[-4:]
-    random_part = _generate_random_short_id(2)
+    timestamp = str(int(time.time()))[-TIMESTAMP_SUBSTRING_LENGTH:]
+    random_part = _generate_random_short_id(FALLBACK_RANDOM_PART_LENGTH)
     fallback_id = timestamp + random_part
 
     if not _check_short_id_exists(fallback_id):
@@ -55,7 +56,8 @@ def _validate_short_id_format(short_id):
         return False, ERROR_MESSAGES['already_exists']
 
     if short_id and (
-            not short_id.isalnum() or not all(ord(c) < 128 for c in short_id)
+            not short_id.isalnum() or
+            not all(ord(c) < MAX_ASCII_CODE for c in short_id)
     ):
         return False, ERROR_MESSAGES['invalid_format']
 
