@@ -1,0 +1,270 @@
+/* Основной Цвет: #13629E
+#285576
+#063D67
+#4693CF
+#6BA3CF
+Вторичный Цвет A:
+#2222AC
+#343481
+#0B0B70
+#5555D5
+#7878D5
+Вторичный Цвет B:
+#0AA864
+#257E58
+#036D40
+#3ED494
+#66D4A5 */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;500;700&display=swap');
+
+
+body {
+    font-family: Inter,Arial,Lucida Grande,sans-serif;
+    padding-top: 1rem;
+    color: #4b4f54;
+    font-size: 1.15vw;
+    font-weight: 200;
+    background-color: #f8f9fa;
+}
+
+@media (max-width: 768px) {
+    body {
+      font-size: 1.5rem;
+    }
+    body small {
+        font-size: .5rem;
+      }
+      .nav {
+        display: block;
+    }
+  }
+
+main {
+    padding-top: 5em;
+    min-height: calc(100vh - 200px);
+}
+
+body p {
+    line-height: 1.2;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #13629E;
+    border-color: #13629E;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #063D67;
+    border-color: #13629E;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.btn-outline-primary {
+    color: #13629E;
+    border-color: #13629E;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #13629E;
+    border-color: #13629E;
+    transform: translateY(-1px);
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.form-control {
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #13629E;
+    box-shadow: 0 0 0 0.2rem rgba(19, 98, 158, 0.25);
+}
+
+.navbar {
+    border-radius: 0 0 15px 15px;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.navbar-brand img {
+    border-radius: 50%;
+}
+
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
+
+a.nav-link {
+    transition: opacity .3s ease,color .3s ease;
+    color: #063D67;
+    font-weight: 500;
+    line-height: 1em;
+    text-transform: uppercase;
+    border-radius: 5px;
+    margin: 0 5px;
+}
+
+a.nav-link:hover {
+    color: #13629E;
+    text-decoration: underline;
+    background-color: rgba(19, 98, 158, 0.1);
+}
+
+a.nav-link.active {
+    color: #13629E;
+    background-color: rgba(19, 98, 158, 0.1);
+    font-weight: 700;
+}
+
+.main-subtitle { 
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1.1;
+}
+
+.main-subtitle strong{ 
+    color: #0AA864;
+}
+
+a.regular-link{
+    text-decoration: none;
+    transition: opacity .3s ease,color .3s ease;
+    color: #063D67;
+    font-weight: 700;
+}
+
+a.regular-link:hover {
+    color: #13629E;
+    text-decoration: underline;
+}
+
+.objects .card-header {
+    padding: .5rem 1rem;
+    margin-bottom: .5rem;
+    background-color: rgba(0,0,0,.03);
+    border-bottom: none;
+}
+
+.contacts ul {
+    list-style: none;
+    margin-left: -2rem;
+}
+
+footer a.regular-link {
+    font-weight: 200;
+}
+
+/* Стили для страниц ошибок */
+.error-template {
+    padding: 40px 15px;
+}
+
+.error-template h1 {
+    font-size: 8rem;
+    font-weight: 300;
+    line-height: 1;
+    color: #6c757d;
+}
+
+.error-template h2 {
+    font-weight: 300;
+}
+
+.error-actions {
+    margin-top: 2rem;
+}
+
+.error-actions .btn {
+    margin: 0.5rem;
+}
+
+/* Стили для таблиц */
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table thead th {
+    background-color: #13629E;
+    color: white;
+    border: none;
+    font-weight: 500;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(19, 98, 158, 0.05);
+}
+
+/* Стили для алертов */
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+
+.alert-success {
+    background-color: rgba(10, 168, 100, 0.1);
+    color: #036D40;
+    border-left: 4px solid #0AA864;
+}
+
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Стили для кнопок копирования */
+.btn-outline-success {
+    transition: all 0.3s ease;
+}
+
+.btn-outline-success:hover {
+    transform: scale(1.05);
+}
+
+/* Стили для футера */
+footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}YaCut - укоротитель ссылок{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="text-center mb-5">
+      <h1 class="display-4"><span style="color:red">Ya</span>Cut</h1>
+      <p class="lead">
+        Создайте короткую ссылку автоматически или предложите свой вариант
+      </p>
+    </div>
+
+    <div class="card shadow">
+      <div class="card-body p-4">
+        <form method="POST">
+          {{ form.hidden_tag() }}
+          
+          <div class="form-group mb-3">
+            {{ form.original_link.label(class="form-label font-weight-bold") }}
+            {{ form.original_link(class="form-control form-control-lg", placeholder="Введите длинную ссылку") }}
+            {% if form.original_link.errors %}
+              {% for error in form.original_link.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ error }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          </div>
+          
+          <div class="form-group mb-4">
+            {{ form.custom_id.label(class="form-label font-weight-bold") }}
+            {{ form.custom_id(class="form-control", placeholder="Ваш вариант короткой ссылки (необязательно)") }}
+            {% if form.custom_id.errors %}
+              {% for error in form.custom_id.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ error }}
+                </div>
+              {% endfor %}
+            {% endif %}
+            <small class="form-text text-muted">
+              Оставьте поле пустым для автоматической генерации
+            </small>
+          </div>
+          
+          <div class="text-center">
+            {{ form.submit(class="btn btn-primary btn-lg px-5") }}
+          </div>
+        </form>
+      </div>
+    </div>
+
+    {% if short_link %}
+    <div class="card mt-4 border-success">
+      <div class="card-body text-center">
+        <h5 class="card-title text-success">Ваша короткая ссылка готова!</h5>
+        <div class="input-group">
+          <input type="text" class="form-control form-control-lg" value="{{ short_link }}" readonly>
+          <div class="input-group-append">
+            <button class="btn btn-outline-success" type="button" onclick="copyToClipboard('{{ short_link }}')">
+              Копировать
+            </button>
+          </div>
+        </div>
+        <a href="{{ short_link }}" target="_blank" class="btn btn-link mt-2">
+          Перейти по ссылке
+        </a>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(function() {
+    // Показываем уведомление об успешном копировании
+    const button = event.target;
+    const originalText = button.textContent;
+    button.textContent = 'Скопировано!';
+    button.classList.remove('btn-outline-success');
+    button.classList.add('btn-success');
+    
+    setTimeout(function() {
+      button.textContent = originalText;
+      button.classList.remove('btn-success');
+      button.classList.add('btn-outline-success');
+    }, 2000);
+  });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Неверный запрос - YaCut{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <h1 class="display-1 text-muted">400</h1>
+            <h2 class="mb-4">Неверный запрос</h2>
+            <p class="lead mb-4">
+                Запрос содержит некорректные данные.
+            </p>
+            <a href="{{ url_for('main.index') }}" class="btn btn-primary">
+                Вернуться на главную
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
