@@ -1,19 +1,13 @@
 {% extends "base.html" %}
-
 {% block title %}Ошибка сервера - YaCut{% endblock %}
-
 {% block content %}
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6 text-center">
             <h1 class="display-1 text-muted">500</h1>
             <h2 class="mb-4">Ошибка сервера</h2>
-            <p class="lead mb-4">
-                Произошла внутренняя ошибка сервера. Мы уже работаем над её устранением.
-            </p>
-            <a href="{{ url_for('main.index') }}" class="btn btn-primary">
-                Вернуться на главную
-            </a>
+            <p class="lead mb-4">Произошла внутренняя ошибка сервера. Мы уже работаем над её устранением.</p>
+            <a href="{{ url_for('main.index') }}" class="btn btn-primary">Вернуться на главную</a>
         </div>
     </div>
 </div>

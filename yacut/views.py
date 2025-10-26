@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, abort, flash, redirect, render_template, request, url_for
+    Blueprint, abort, flash, redirect, render_template, request
 )
 
 from yacut.forms import FileUploadForm, URLForm

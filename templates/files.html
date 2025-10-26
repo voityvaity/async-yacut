@@ -1,37 +1,27 @@
 {% extends "base.html" %}
-
 {% block title %}Загрузка файлов - YaCut{% endblock %}
-
 {% block content %}
 <div class="row justify-content-center">
   <div class="col-md-10 col-lg-8">
     <div class="text-center mb-5">
       <h1 class="display-4"><span style="color:red">Ya</span>Cut</h1>
-      <p class="lead">
-        Загрузите файлы на Яндекс.Диск и получите короткие ссылки для скачивания
-      </p>
+      <p class="lead">Загрузите файлы на Яндекс.Диск и получите короткие ссылки для скачивания</p>
     </div>
 
     <div class="card shadow">
       <div class="card-body p-4">
         <form method="POST" enctype="multipart/form-data" id="fileUploadForm">
           {{ form.hidden_tag() }}
-          
           <div class="form-group mb-4">
             {{ form.files.label(class="form-label font-weight-bold") }}
             {{ form.files(class="form-control-file", multiple=true, accept="*/*") }}
             {% if form.files.errors %}
               {% for error in form.files.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ error }}
-                </div>
+                <div class="invalid-feedback d-block">{{ error }}</div>
               {% endfor %}
             {% endif %}
-            <small class="form-text text-muted">
-              Выберите один или несколько файлов для загрузки. Максимальный размер файла: 10 МБ
-            </small>
+            <small class="form-text text-muted">Выберите один или несколько файлов для загрузки. Максимальный размер файла: 10 МБ</small>
           </div>
-          
           <div class="text-center">
             {{ form.submit(class="btn btn-primary btn-lg px-5") }}
           </div>
@@ -39,7 +29,6 @@
       </div>
     </div>
 
-    <!-- Список загруженных файлов -->
     {% if file_links %}
     <div class="card mt-4">
       <div class="card-header">
@@ -69,9 +58,7 @@
                     <div class="input-group input-group-sm">
                       <input type="text" class="form-control" value="{{ file_link.short_link }}" readonly>
                       <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('{{ file_link.short_link }}')">
-                          Копировать
-                        </button>
+                        <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('{{ file_link.short_link }}')">Копировать</button>
                       </div>
                     </div>
                   {% else %}
@@ -80,9 +67,7 @@
                 </td>
                 <td>
                   {% if file_link.short_link %}
-                    <a href="{{ file_link.short_link }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                      Скачать
-                    </a>
+                    <a href="{{ file_link.short_link }}" target="_blank" class="btn btn-sm btn-outline-primary">Скачать</a>
                   {% else %}
                     <span class="text-muted">—</span>
                   {% endif %}
@@ -109,13 +94,11 @@
 <script>
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text).then(function() {
-    // Показываем уведомление об успешном копировании
     const button = event.target;
     const originalText = button.textContent;
     button.textContent = 'Скопировано!';
     button.classList.remove('btn-outline-secondary');
     button.classList.add('btn-success');
-    
     setTimeout(function() {
       button.textContent = originalText;
       button.classList.remove('btn-success');
@@ -124,34 +107,29 @@ function copyToClipboard(text) {
   });
 }
 
-// Показываем информацию о выбранных файлах
 const filesInput = document.getElementById('files');
 if (filesInput) {
   filesInput.addEventListener('change', function(e) {
-  const files = e.target.files;
-  const fileInfo = document.createElement('div');
-  fileInfo.className = 'mt-2';
-  
-  if (files.length > 0) {
-    let infoText = `Выбрано файлов: ${files.length}`;
-    if (files.length <= 5) {
-      infoText += '<ul class="list-unstyled mt-2">';
-      for (let file of files) {
-        infoText += `<li><small>${file.name} (${(file.size / 1024 / 1024).toFixed(2)} МБ)</small></li>`;
+    const files = e.target.files;
+    const fileInfo = document.createElement('div');
+    fileInfo.className = 'mt-2';
+    if (files.length > 0) {
+      let infoText = `Выбрано файлов: ${files.length}`;
+      if (files.length <= 5) {
+        infoText += '<ul class="list-unstyled mt-2">';
+        for (let file of files) {
+          infoText += `<li><small>${file.name} (${(file.size / 1024 / 1024).toFixed(2)} МБ)</small></li>`;
+        }
+        infoText += '</ul>';
       }
-      infoText += '</ul>';
+      fileInfo.innerHTML = infoText;
     }
-    fileInfo.innerHTML = infoText;
-  }
-  
-  // Удаляем предыдущую информацию
-  const existingInfo = document.querySelector('.file-info');
-  if (existingInfo) {
-    existingInfo.remove();
-  }
-  
-  fileInfo.className += ' file-info';
-  e.target.parentNode.appendChild(fileInfo);
+    const existingInfo = document.querySelector('.file-info');
+    if (existingInfo) {
+      existingInfo.remove();
+    }
+    fileInfo.className += ' file-info';
+    e.target.parentNode.appendChild(fileInfo);
   });
 }
 </script>
