@@ -40,41 +40,21 @@
     </div>
     <div class="col-sm">
       <p class="text-center">
-      {% if file_links %}
-        <h5 class="text-center">Загруженные файлы</h5>
-        <div class="table-responsive">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th>Имя файла</th>
-                <th>Короткая ссылка</th>
-                <th>Действия</th>
-              </tr>
-            </thead>
-            <tbody>
+             {% if file_links %}
+               <div class="table-responsive">
+                 <table class="table table-hover">
+                   <tbody>
               {% for file_link in file_links %}
               <tr>
                 <td>
-                  <strong>{{ file_link.filename }}</strong>
+                  {{ file_link.filename }}
                   {% if file_link.error %}
                     <br><small class="text-danger">{{ file_link.error }}</small>
                   {% endif %}
                 </td>
                 <td>
                   {% if file_link.short_link %}
-                    <div class="input-group input-group-sm">
-                      <input type="text" class="form-control" value="{{ file_link.short_link }}" readonly>
-                      <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('{{ file_link.short_link }}')">Копировать</button>
-                      </div>
-                    </div>
-                  {% else %}
-                    <span class="text-muted">—</span>
-                  {% endif %}
-                </td>
-                <td>
-                  {% if file_link.short_link %}
-                    <a href="{{ file_link.short_link }}" target="_blank" class="btn btn-sm btn-outline-primary">Скачать</a>
+                    <a href="{{ file_link.short_link }}" target="_blank">{{ file_link.short_link }}</a>
                   {% else %}
                     <span class="text-muted">—</span>
                   {% endif %}
@@ -93,21 +73,6 @@
 </div>
 
 <script>
-function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).then(function() {
-    const button = event.target;
-    const originalText = button.textContent;
-    button.textContent = 'Скопировано!';
-    button.classList.remove('btn-outline-secondary');
-    button.classList.add('btn-success');
-    setTimeout(function() {
-      button.textContent = originalText;
-      button.classList.remove('btn-success');
-      button.classList.add('btn-outline-secondary');
-    }, 2000);
-  });
-}
-
 const filesInput = document.getElementById('files');
 if (filesInput) {
   filesInput.addEventListener('change', function(e) {

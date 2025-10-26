@@ -29,7 +29,6 @@ def index():
             return render_template('index.html', form=form)
 
         short_link = create_short_link(request.url_root, url_map.short)
-        flash(f'Ваша новая ссылка готова: {short_link}', 'success')
         return render_template('index.html', form=form, short_link=short_link)
 
     flash_form_errors(form)
@@ -54,7 +53,6 @@ def files():
             from yacut.yandex_disk import upload_files_batch
             import os
 
-            # Проверяем наличие токена
             disk_token = os.environ.get('DISK_TOKEN')
             if not disk_token:
                 flash('Не настроен токен Яндекс.Диска. '
@@ -91,8 +89,6 @@ def files():
                         'error': 'Не удалось загрузить файл на Яндекс.Диск'
                     })
 
-            files_count = len(file_links)
-            flash(f'Обработано файлов: {files_count}', 'success')
             return render_template(
                 'files.html', form=form, file_links=file_links
             )
@@ -120,9 +116,33 @@ def redirect_to_original(short_id):
 
     if url_map:
         if is_file_url(url_map.original):
-            response = redirect(url_map.original)
-            response.headers['Content-Disposition'] = 'attachment'
-            return response
+            import requests
+            import urllib.parse
+            try:
+                response = requests.get(url_map.original, stream=True)
+                if response.status_code == 200:
+                    from flask import Response
+                    parsed_url = urllib.parse.urlparse(url_map.original)
+                    query_params = urllib.parse.parse_qs(parsed_url.query)
+                    filename = query_params.get('filename', ['file'])[0]
+                    encoded_filename = urllib.parse.quote(
+                        filename.encode('utf-8'))
+
+                    return Response(
+                        response.content,
+                        mimetype=response.headers.get(
+                            'content-type', 'application/octet-stream'),
+                        headers={
+                            'Content-Disposition': (
+                                f'attachment; filename*=UTF-8\'\''
+                                f'{encoded_filename}'
+                            )
+                        }
+                    )
+                else:
+                    abort(404)
+            except Exception:
+                abort(404)
         else:
             return redirect(url_map.original)
     else:

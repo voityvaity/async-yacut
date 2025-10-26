@@ -49,38 +49,14 @@
     <div class="col-sm">
     </div>
     <div class="col-sm">
-      <p class="text-center">
       {% if short_link %}
-        <h5 class="text-center">Ваша короткая ссылка готова!</h5>
-        <div class="input-group">
-          <input type="text" class="form-control form-control-lg" value="{{ short_link }}" readonly>
-          <div class="input-group-append">
-            <button class="btn btn-outline-success" type="button" onclick="copyToClipboard('{{ short_link }}')">Копировать</button>
-          </div>
-        </div>
-        <a href="{{ short_link }}" target="_blank" class="btn btn-link mt-2">Перейти по ссылке</a>
+        <p class="text-center">Ваша короткая ссылка готова!</p>
+        <p class="text-center"><a href="{{ short_link }}" target="_blank">{{ short_link }}</a></p>
       {% endif %}
-      </p>
     </div>
     <div class="col-sm">
     </div>
   </div>
 </div>
 
-<script>
-function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).then(function() {
-    const button = event.target;
-    const originalText = button.textContent;
-    button.textContent = 'Скопировано!';
-    button.classList.remove('btn-outline-success');
-    button.classList.add('btn-success');
-    setTimeout(function() {
-      button.textContent = originalText;
-      button.classList.remove('btn-success');
-      button.classList.add('btn-outline-success');
-    }, 2000);
-  });
-}
-</script>
 {% endblock %}
