@@ -1,5 +1,6 @@
-from flask import Blueprint, jsonify, request
 from http import HTTPStatus
+
+from flask import Blueprint, jsonify, request
 
 from yacut.constants import API_ERROR_MESSAGES
 from yacut.helpers import (

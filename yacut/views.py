@@ -1,12 +1,12 @@
 import asyncio
 import os
 import urllib.parse
+from http import HTTPStatus
 
 import requests
 from flask import (
     Blueprint, abort, flash, redirect, render_template, request, Response
 )
-from http import HTTPStatus
 
 from yacut.forms import FileUploadForm, URLForm
 from yacut.helpers import (

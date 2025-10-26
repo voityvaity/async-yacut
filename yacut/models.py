@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from yacut import db
 from yacut.constants import MAX_SHORT_ID_LENGTH
+from yacut import db
 
 
 class URLMap(db.Model):

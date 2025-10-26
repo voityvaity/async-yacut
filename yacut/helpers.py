@@ -1,5 +1,6 @@
-from flask import flash, jsonify, render_template, request
 from http import HTTPStatus
+
+from flask import flash, jsonify, render_template, request
 
 from yacut.constants import API_ERROR_MESSAGES, FILE_DOMAINS, RESERVED_ROUTES
 from yacut.models import URLMap
